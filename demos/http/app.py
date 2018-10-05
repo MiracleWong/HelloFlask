@@ -1,15 +1,18 @@
-from flask import Flask, redirect, url_for, abort, make_response, json, jsonify
+from flask import Flask, redirect, url_for, abort, make_response, json, jsonify,request
 app = Flask(__name__)
 
 
+# @app.route('/')
+# def hello_world():
+#     return 'Hello World!'
+
 @app.route('/')
-def hello_world():
-    return 'Hello World!'
-
-
-@app.route('/hello', methods=['GET', 'POST'])
+@app.route('/hello')
 def hello():
-    return redirect('http://miracleprogramming.wang')
+    name = request.args.get('name')
+    if name is None:
+        name = request.cookies.get('name', 'Human')
+    return '<h1>Hello, %s</h1>' % name
 
 
 @app.route('/hi')
@@ -38,6 +41,13 @@ def foo():
     # return response
     return jsonify(name='MiracleWong', gender='man')
     # return jsonify({name: 'MiracleWong', gender: 'man'})
+
+
+@app.route('/set/<name>')
+def set_cookie(name):
+    response = make_response(redirect(url_for('hello')))
+    response.set_cookie('name', name)
+    return response
 
 
 if __name__ == '__main__':
