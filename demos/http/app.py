@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, abort, make_response
+from flask import Flask, redirect, url_for, abort, make_response, json, jsonify
 app = Flask(__name__)
 
 
@@ -29,10 +29,15 @@ def not_found():
 
 @app.route('/foo')
 def foo():
-    response = make_response("Hello, World")
-    response.mimetype = 'text/plane'
-    return response
-
+    # data = {
+    #     'name': 'MiracleWong',
+    #     'gender': 'man'
+    # }
+    # response = make_response(json.dumps(data))
+    # response.mimetype = 'application/json'
+    # return response
+    return jsonify(name='MiracleWong', gender='man')
+    # return jsonify({name: 'MiracleWong', gender: 'man'})
 
 
 if __name__ == '__main__':
