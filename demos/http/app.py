@@ -1,11 +1,10 @@
-from flask import Flask, request, redirect, url_for, abort
-
+from flask import Flask, redirect, url_for, abort, make_response
 app = Flask(__name__)
 
 
-# @app.route('/')
-# def hello_world():
-#     return 'Hello World!'
+@app.route('/')
+def hello_world():
+    return 'Hello World!'
 
 
 @app.route('/hello', methods=['GET', 'POST'])
@@ -26,7 +25,15 @@ def go_back(year):
 @app.route('/404')
 def not_found():
     abort(404)
-    
+
+
+@app.route('/foo')
+def foo():
+    response = make_response("Hello, World")
+    response.mimetype = 'text/plane'
+    return response
+
+
 
 if __name__ == '__main__':
     app.run()
