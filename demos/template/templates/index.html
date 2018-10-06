@@ -1,3 +1,4 @@
+{% from 'macros.html' import qux %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,5 +13,6 @@
         <li>Filter: {{ foo|musical }}</li>
         <li>Global: {{ bar() }}</li>
         <li>Test: {% if name is baz %}I am baz.{% endif %}</li>
+        <li>Macro: {{ qux(amount=1) }}</li>
     </ul>
 </body>
