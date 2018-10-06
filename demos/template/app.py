@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Markup
+from flask import Flask, render_template, Markup, redirect, url_for, flash
 import os
 
 app = Flask(__name__)
@@ -68,6 +68,13 @@ def baz(n):
     if n == 'baz':
         return True
     return False
+
+
+# Flash
+@app.route('/flash')
+def just_flash():
+    flash("I'm a Flash, who is looking for me ?")
+    return redirect(url_for('hello'))
 
 
 if __name__ == '__main__':

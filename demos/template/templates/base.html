@@ -4,8 +4,11 @@
     {% block head %}
         <meta charset="UTF-8">
         <title>{% block title %} Template - HelloFlask {% endblock %}</title>
-        {% block styles %} {% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+                <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        {% block styles %}
+            <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css' ) }}">
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+        {% endblock %}
     {% endblock %}
 </head>
 <body>
@@ -13,12 +16,21 @@
         <ul><li><a href="/">Home</a></li></ul>
     </nav>
     <main>
-        {% block content %}{% endblock %}
+        {% for message in get_flashed_messages() %}
+            <div class="alert">{{ message }}</div>
+        {% endfor %}
+        {% block content %}
+
+        {% endblock %}
     </main>
     <footer>
         {% block footer %}
             ...
         {% endblock %}
     </footer>
-    {% block scripts %} {% endblock %}
+    {% block scripts %}
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    {% endblock %}
 </body>
