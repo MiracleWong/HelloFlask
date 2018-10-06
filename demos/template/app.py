@@ -1,6 +1,10 @@
 from flask import Flask, render_template, Markup
+import os
 
 app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY', 'secret string')
+app.jinja_env.trim_blocks = True
+app.jinja_env.lstrip_blocks = True
 
 user = {
     'username': 'Miracle Wong',
@@ -23,7 +27,8 @@ movies = [
 
 @app.route('/')
 def hello_world():
-    return render_template('index.html')
+    name = 'baz'
+    return render_template('index.html', name = name)
 
 
 @app.route('/watchlist')
@@ -56,6 +61,13 @@ def hello():
 @app.template_filter()
 def musical(s):
     return s + Markup(' &#9835;')
+
+
+@app.template_test()
+def baz(n):
+    if n == 'baz':
+        return True
+    return False
 
 
 if __name__ == '__main__':

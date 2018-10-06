@@ -11,6 +11,6 @@
         <li><a href="{{ url_for('watchlist') }}">Watchlist</a></li>
         <li>Filter: {{ foo|musical }}</li>
         <li>Global: {{ bar() }}</li>
+        <li>Test: {% if name is baz %}I am baz.{% endif %}</li>
     </ul>
 </body>
-</html>
