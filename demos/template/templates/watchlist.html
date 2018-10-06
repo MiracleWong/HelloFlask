@@ -5,7 +5,7 @@
     <title>{{ user.name }}</title>
 </head>
 <body>
-    <a href="{{ url_for('index') }}">&larr; Return</a>
+{#    <a href="{{ url_for('index') }}">&larr; Return</a>#}
     <h2>{{ user.username }}</h2>
     {% if user.bio %}
         <i>{{ user.bio }}</i>
