@@ -19,5 +19,11 @@ def basic():
     return render_template('basic.html', form=form)
 
 
+@app.route('/bootstrap')
+def bootstrap():
+    form = LoginForm()
+    return render_template('bootstrap.html', form=form)
+
+
 if __name__ == '__main__':
     app.run()
