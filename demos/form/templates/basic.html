@@ -3,9 +3,19 @@
     <h2>Basic Form</h2>
     <form method="post">
         {{ form.csrf_token }}
-        {{ form.username.label }} {{ form.username }} <br>
-        {{ form.password.label }} {{ form.password }} <br>
-        {{ form.remember }} {{ form.remember.label }} <br>
+        {{ form.username.label }} <br>
+        {{ form.username }} <br>
+        {% for message in form.username.errors %}
+            <small class="error"> {{ message }} </small>
+        {% endfor %}
+
+        {{ form.password.label }} <br>
+        {{ form.password }} <br>
+        {% for message in form.password.errors %}
+            <small class="error"> {{ message }} </small>
+        {% endfor %}
+        {{ form.remember }} <br>
+        {{ form.remember.label }} <br>
         {{ form.submit }} <br>
     </form>
 {% endblock %}
