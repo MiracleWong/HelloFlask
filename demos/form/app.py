@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
-from forms import LoginForm
 import os
+from flask import Flask, render_template, request, flash, redirect, url_for
+from forms import LoginForm, FortyTwoForm
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'secret string')
@@ -32,6 +32,15 @@ def bootstrap():
         flash("Welcome Home, %s" % username)
         return redirect(url_for('index'))
     return render_template('bootstrap.html', form=form)
+
+
+@app.route('/custom-validator', methods=['GET', 'POST'])
+def custom_validator():
+    form = FortyTwoForm()
+    if form.validate_on_submit():
+        flash('Bingo!')
+        return redirect(url_for('index'))
+    return render_template('custom_validator.html', form=form)
 
 
 if __name__ == '__main__':
