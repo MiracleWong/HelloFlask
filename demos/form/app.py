@@ -2,8 +2,8 @@ import os
 from flask import Flask, render_template, flash, redirect, url_for, request, send_from_directory, session
 from flask_wtf.csrf import validate_csrf
 from wtforms import ValidationError
-
-from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm
+from flask_ckeditor import CKEditor
+from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm
 import uuid
 
 app = Flask(__name__)
@@ -19,6 +19,12 @@ app.config['ALLOWED_EXTENSIONS'] = ['png', 'jpg', 'jpeg', 'gif']
 # Flask config
 # set request body's max length
 app.config['MAX_CONTENT_LENGTH'] = 3 * 1024 * 1024
+
+
+# Flask CKEditor
+app.config['CKEDITOR_SERVICE_LOCAL'] = True
+
+ckeditor = CKEditor(app)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -129,6 +135,17 @@ def multi_upload():
         session['filenames'] = filenames
         return redirect(url_for('show_images'))
     return render_template('upload.html', form=form)
+
+
+@app.route('/ckeditor', methods=['GET', 'POST'])
+def integrate_ckeditor():
+    form = RichTextForm()
+    if form.validate_on_submit():
+        title = form.title.data
+        body = form.body.data
+        flash('Your post is published!')
+        return render_template('post.html', title=title, body=body)
+    return render_template('ckeditor.html', form=form)
 
 
 if __name__ == '__main__':
