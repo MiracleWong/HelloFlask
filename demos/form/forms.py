@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, MultipleFileField
 from wtforms.validators import DataRequired, Length, ValidationError
 from flask_wtf.file import FileAllowed, FileField, FileRequired
 
@@ -26,4 +26,8 @@ class FortyTwoForm(FlaskForm):
 # 4.4.2 upload form
 class UploadForm(FlaskForm):
     photo = FileField('Upload Image', validators=[FileRequired(), FileAllowed(['jpg', 'jpeg', 'png', 'gif'])])
+    submit = SubmitField()
+
+class MultiUploadForm(FlaskForm):
+    photo = MultipleFileField('Upload Image', validators=[DataRequired()])
     submit = SubmitField()
