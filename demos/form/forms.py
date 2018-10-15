@@ -3,6 +3,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
 from wtforms.validators import DataRequired, Length, ValidationError
+from flask_wtf.file import FileAllowed, FileField, FileRequired
 
 
 class LoginForm(FlaskForm):
@@ -20,3 +21,9 @@ class FortyTwoForm(FlaskForm):
     def validate_answer(form, field):
         if field.data != 42:
             raise ValidationError("Must be 42")
+
+
+# 4.4.2 upload form
+class UploadForm(FlaskForm):
+    photo = FileField('Upload Image', validators=[FileRequired(), FileAllowed(['jpg', 'jpeg', 'png', 'gif'])])
+    submit = SubmitField()
