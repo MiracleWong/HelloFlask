@@ -3,7 +3,7 @@ from flask import Flask, render_template, flash, redirect, url_for, request, sen
 from flask_wtf.csrf import validate_csrf
 from wtforms import ValidationError
 from flask_ckeditor import CKEditor
-from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm
+from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm
 import uuid
 
 app = Flask(__name__)
@@ -146,6 +146,21 @@ def integrate_ckeditor():
         flash('Your post is published!')
         return render_template('post.html', title=title, body=body)
     return render_template('ckeditor.html', form=form)
+
+
+@app.route('/two-submit', methods=['GET', 'POST'])
+def two_submit():
+    form = NewPostForm()
+    if form.validate_on_submit():
+        if form.save.data:
+            # title = form.title.data
+            # body = form.body.data
+            # save it
+            flash('Your press the "Save" Button')
+        elif form.publish.data:
+            flash('Your press the "Publish" Button')
+        return redirect(url_for('index'))
+    return render_template('2submit.html', form=form)
 
 
 if __name__ == '__main__':
