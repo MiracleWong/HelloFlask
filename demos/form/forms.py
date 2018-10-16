@@ -2,7 +2,7 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, MultipleFileField, TextAreaField
-from wtforms.validators import DataRequired, Length, ValidationError
+from wtforms.validators import DataRequired, Length, ValidationError, Email
 from flask_wtf.file import FileAllowed, FileField, FileRequired
 from flask_ckeditor import CKEditorField
 
@@ -44,11 +44,24 @@ class RichTextForm(FlaskForm):
     body = CKEditorField('Body', validators=[DataRequired()])
     submit = SubmitField()
 
+
 # 4.4.6
-
-
 class NewPostForm(FlaskForm):
     title = StringField('title', validators=[DataRequired(), Length(1, 50)])
     body = TextAreaField('Body', validators=[DataRequired()])
     save = SubmitField('Save')
     publish = SubmitField('Publish')
+
+
+# 4.4.7
+class SigninForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(1, 20)])
+    password = PasswordField('Password', validators=[DataRequired(),  Length(8, 128)])
+    submit1 = SubmitField('Sing In')
+
+
+class RegisterForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(1, 20)])
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(1, 254)])
+    password = PasswordField('Password', validators=[DataRequired(),  Length(8, 128)])
+    submit2 = SubmitField('Register')

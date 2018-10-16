@@ -3,7 +3,7 @@ from flask import Flask, render_template, flash, redirect, url_for, request, sen
 from flask_wtf.csrf import validate_csrf
 from wtforms import ValidationError
 from flask_ckeditor import CKEditor
-from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm
+from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm, RegisterForm, SigninForm
 import uuid
 
 app = Flask(__name__)
@@ -161,6 +161,22 @@ def two_submit():
             flash('Your press the "Publish" Button')
         return redirect(url_for('index'))
     return render_template('2submit.html', form=form)
+
+
+@app.route('/multi-form', methods=['GET', 'POST'])
+def multi_form():
+    signin_form = SigninForm()
+    register_form = RegisterForm()
+    if signin_form.submit1.data and signin_form.validate():
+        username = signin_form.username.data
+        flash('%s ,Your just submit the SignIn Form' % username)
+        return redirect(url_for('index'))
+
+    if register_form.submit2.data and register_form.validate():
+        username = register_form.username.data
+        flash('%s ,Your just submit the Register Form' % username)
+        return redirect(url_for('index'))
+    return render_template('2form.html', signin_form=signin_form, register_form=register_form)
 
 
 if __name__ == '__main__':
