@@ -3,6 +3,7 @@ from flask import Flask, render_template, flash, redirect, url_for, request, sen
 from flask_wtf.csrf import validate_csrf
 from wtforms import ValidationError
 from flask_ckeditor import CKEditor
+from flask_dropzone import Dropzone
 from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm, RegisterForm, SigninForm, SigninForm2, RegisterForm2
 import uuid
 
@@ -24,7 +25,13 @@ app.config['MAX_CONTENT_LENGTH'] = 3 * 1024 * 1024
 # Flask CKEditor
 app.config['CKEDITOR_SERVICE_LOCAL'] = True
 
+# Flask-Dropzone config
+app.config['DROPZONE_ALLOWED_FILE_TYPE'] = 'image'
+app.config['DROPZONE_MAX_FILE_SIZE'] = 3
+app.config['DROPZONE_MAX_FILES'] = 30
+
 ckeditor = CKEditor(app)
+dropzone = Dropzone(app)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -148,8 +155,26 @@ def integrate_ckeditor():
     return render_template('ckeditor.html', form=form)
 
 
-@app.route('/two-submit', methods=['GET', 'POST'])
-def two_submit():
+@app.route('/dropzone-upload', methods=['GET', 'POST'])
+def dropzone_upload():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            return 'This field is required.', 400
+        f = request.files.get('file')
+
+        if f and allowed_file(f.filename):
+            filename = random_filename(f.filename)
+            f.save(os.path.join(
+                app.config['UPLOAD_PATH'], filename
+            ))
+        else:
+            return 'Invalid file type.', 400
+    return render_template('dropzone.html')
+
+
+@app.route('/two-submits', methods=['GET', 'POST'])
+def two_submits():
     form = NewPostForm()
     if form.validate_on_submit():
         if form.save.data:
