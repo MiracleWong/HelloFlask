@@ -29,7 +29,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # 注册Shell的上下文处理函数
 @app.shell_context_processor
 def make_shell_context():
-    return dict(db=db, Note=Note, Author=Author, Article=Article)
+    return dict(db=db, Note=Note, Author=Author, Article=Article, Writer=Writer, Book=Book)
 
 
 db = SQLAlchemy(app)
@@ -92,6 +92,25 @@ class Article(db.Model):
 
     def __repr__(self):
         return '<Article %r>' % self.title
+
+
+class Writer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(70), unique=True)
+    books = db.relationship('Book')
+
+    def __repr__(self):
+        return '<Writer %r>' % self.name
+
+
+class Book(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), index=True)
+    writer_id = db.Column(db.Integer, db.ForeignKey('writer.id'))
+    writer = db.relationship('Writer', back_populates='books')
+
+    def __repr__(self):
+        return '<Book %r>' % self.name
 
 
 @app.route('/')
