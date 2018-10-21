@@ -1,4 +1,6 @@
-import os, sys
+import os
+import sys
+import click
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -21,6 +23,23 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 db = SQLAlchemy(app)
+
+
+@app.cli.command()
+def initdb():
+    db.create_all()
+    click.echo('Initialized database.')
+
+
+@app.cli.command()
+def dropdb():
+    db.drop_all()
+    click.echo('Dropped database.')
+
+
+class Note(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
 
 
 @app.route('/')
