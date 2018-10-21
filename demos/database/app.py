@@ -29,7 +29,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # 注册Shell的上下文处理函数
 @app.shell_context_processor
 def make_shell_context():
-    return dict(db=db, Note=Note, Author=Author, Article=Article, Writer=Writer, Book=Book)
+    return dict(db=db, Note=Note, Author=Author, Article=Article, Writer=Writer, Book=Book,
+                Singer=Singer, Song=Song, Citizen=Citizen, City=City, Country=Country, Capital=Capital)
 
 
 db = SQLAlchemy(app)
@@ -147,6 +148,25 @@ class City(db.Model):
 
     def __repr__(self):
         return '<City %r>' % self.name
+
+
+class Country(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True)
+    capital = db.relationship('Capital', uselist=False)
+
+    def __repr__(self):
+        return '<Country %r>' % self.name
+
+
+class Capital(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True)
+    country_id = db.Column(db.Integer, db.ForeignKey('country.id'))
+    country = db.relationship('Country')
+
+    def __repr__(self):
+        return '<Capital %r>' % self.name
 
 
 @app.route('/')
