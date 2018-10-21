@@ -30,7 +30,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 @app.shell_context_processor
 def make_shell_context():
     return dict(db=db, Note=Note, Author=Author, Article=Article, Writer=Writer, Book=Book,
-                Singer=Singer, Song=Song, Citizen=Citizen, City=City, Country=Country, Capital=Capital)
+                Singer=Singer, Song=Song, Citizen=Citizen, City=City, Country=Country, Capital=Capital,
+                Student=Student, Teacher=Teacher)
 
 
 db = SQLAlchemy(app)
@@ -167,6 +168,33 @@ class Capital(db.Model):
 
     def __repr__(self):
         return '<Capital %r>' % self.name
+
+
+# many to many with association table 关联表
+association_table = db.Table('association',
+                             db.Column('student_id', db.Integer, db.ForeignKey('student.id')),
+                             db.Column('teacher_id', db.Integer, db.ForeignKey('teacher.id'))
+                             )
+
+
+class Student(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(70), unique=True)
+    grade = db.Column(db.String(20))
+    teachers = db.relationship('Teacher', secondary=association_table, back_populates='students')
+
+    def __repr__(self):
+        return '<Country %r>' % self.name
+
+
+class Teacher(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True)
+    office = db.Column(db.String(20))
+    students = db.relationship('Student', secondary=association_table, back_populates='teachers')
+
+    def __repr__(self):
+        return '<Country %r>' % self.name
 
 
 @app.route('/')
