@@ -21,8 +21,15 @@ app.jinja_env.lstrip_blocks = True
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'secret string')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///' + os.path.join(app.root_path, 'data.db'))
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+    'DATABASE_URL', 'sqlite:///' + os.path.join(app.root_path, 'data.db'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+
+# 注册Shell的上下文处理函数
+@app.shell_context_processor
+def make_shell_context():
+    return dict(db=db, Note=Note, Author=Author, Article=Article)
 
 
 db = SQLAlchemy(app)
@@ -65,9 +72,32 @@ class Note(db.Model):
         return '<Note %r>' % self.body
 
 
+# 5.5.2 一对多
+class Author(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(70), unique=True)
+    phone = db.Column(db.String(20))
+    articles = db.relationship('Article')
+
+    # optional
+    def __repr__(self):
+        return '<Author %r>' % self.name
+
+
+class Article(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50), index=True)
+    body = db.Column(db.Text)
+    author_id = db.Column(db.Integer, db.ForeignKey('author.id'))
+
+    def __repr__(self):
+        return '<Article %r>' % self.title
+
+
 @app.route('/')
 def index():
     form = DeleteNoteForm()
+    print(os.path.join(app.root_path, 'data.db'))
     notes = Note.query.all()
     return render_template('index.html', notes=notes, form=form)
 
@@ -82,7 +112,7 @@ def new_note():
         db.session.commit()
         flash('Your note is saved')
         return redirect(url_for('index'))
-    return render_template('new_note.html', form = form)
+    return render_template('new_note.html', form=form)
 
 
 @app.route('/edit/<int:note_id>', methods=['GET', 'POST'])
