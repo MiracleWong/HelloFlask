@@ -6,6 +6,7 @@ from flask_wtf import FlaskForm
 from wtforms import TextAreaField, SubmitField
 from wtforms.validators import DataRequired
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 # sqlite URI compatible
 WIN = sys.platform.startswith('win')
@@ -35,13 +36,16 @@ def make_shell_context():
 
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 
 @app.cli.command()
 @click.option('--drop', is_flag=True, help='Create after drop')
 def initdb(drop):
     if drop:
+        click.confirm('This operation will delete the databases, do you want to continue?', abort=True)
         db.drop_all()
+        click.echo('Drop Database.')
     db.create_all()
     click.echo('Initialized database.')
 
