@@ -113,6 +113,24 @@ class Book(db.Model):
         return '<Book %r>' % self.name
 
 
+class Singer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(70), unique=True)
+    songs = db.relationship('Song', backref='singer')
+
+    def __repr__(self):
+        return '<Singer %r>' % self.name
+
+
+class Song(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), index=True)
+    singer_id = db.Column(db.Integer, db.ForeignKey('singer.id'))
+
+    def __repr__(self):
+        return '<Song %r>' % self.name
+
+
 @app.route('/')
 def index():
     form = DeleteNoteForm()
