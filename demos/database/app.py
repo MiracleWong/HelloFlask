@@ -131,6 +131,24 @@ class Song(db.Model):
         return '<Song %r>' % self.name
 
 
+class Citizen(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(70), unique=True)
+    city_id = db.Column(db.Integer, db.ForeignKey('city.id'))
+    city = db.relationship('City')
+
+    def __repr__(self):
+        return '<Citizen %r>' % self.name
+
+
+class City(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True)
+
+    def __repr__(self):
+        return '<City %r>' % self.name
+
+
 @app.route('/')
 def index():
     form = DeleteNoteForm()
