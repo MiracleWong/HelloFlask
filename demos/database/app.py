@@ -32,7 +32,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 def make_shell_context():
     return dict(db=db, Note=Note, Author=Author, Article=Article, Writer=Writer, Book=Book,
                 Singer=Singer, Song=Song, Citizen=Citizen, City=City, Country=Country, Capital=Capital,
-                Student=Student, Teacher=Teacher, Post=Post, Comment=Comment)
+                Student=Student, Teacher=Teacher, Post=Post, Comment=Comment, Draft=Draft)
 
 
 db = SQLAlchemy(app)
@@ -220,6 +220,19 @@ class Comment(db.Model):
 
     def __repr__(self):
         return '<Comment %r>' % self.id
+
+
+# 5.7.2 event listening
+class Draft(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    edit_time = db.Column(db.Integer, default=0)
+
+
+@db.event.listens_for(Draft.body, 'set')
+def increment_edit_time(target, value, oldvalue, initiator):
+    if target.edit_time is not None:
+        target.edit_time += 1
 
 
 @app.route('/')
