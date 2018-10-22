@@ -32,7 +32,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 def make_shell_context():
     return dict(db=db, Note=Note, Author=Author, Article=Article, Writer=Writer, Book=Book,
                 Singer=Singer, Song=Song, Citizen=Citizen, City=City, Country=Country, Capital=Capital,
-                Student=Student, Teacher=Teacher)
+                Student=Student, Teacher=Teacher, Post=Post, Comment=Comment)
 
 
 db = SQLAlchemy(app)
@@ -199,6 +199,27 @@ class Teacher(db.Model):
 
     def __repr__(self):
         return '<Country %r>' % self.name
+
+
+# 5.7.1 级联操作
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50), unique=True)
+    body = db.Column(db.Text)
+    comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return '<Post %r>' % self.id
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+    post = db.relationship('Post', back_populates='comments')
+
+    def __repr__(self):
+        return '<Comment %r>' % self.id
 
 
 @app.route('/')
