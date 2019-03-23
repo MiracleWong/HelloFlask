@@ -1,9 +1,14 @@
 import os
-from flask import Flask, redirect, url_for, abort, make_response, json, jsonify, request, session
+from flask import Flask, redirect, url_for, abort, make_response, json, jsonify, request, session, g
 app = Flask(__name__)
 
+# 密钥写进环境变量
 app.secret_key = os.getenv('SECRET_KEY', 'asdfghjkl')
 
+
+@app.before_request
+def get_name():
+    g.name = request.args.get('name')
 
 # @app.route('/')
 # def hello_world():
@@ -16,6 +21,7 @@ def hello():
     name = request.args.get('name')
     if name is None:
         name = request.cookies.get('name', 'Human')
+        # return '<h1>Hello, %s</h1>' % name
         response = '<h1>Hello, %s</h1>' % name
 
         if 'logged_in' in session:
@@ -42,15 +48,16 @@ def not_found():
 
 @app.route('/foo')
 def foo():
-    # data = {
-    #     'name': 'MiracleWong',
-    #     'gender': 'man'
-    # }
-    # response = make_response(json.dumps(data))
-    # response.mimetype = 'application/json'
-    # return response
-    return jsonify(name='MiracleWong', gender='man')
-    # return jsonify({name: 'MiracleWong', gender: 'man'})
+    data = {
+        'name': 'MiracleWong',
+        'gender': 'man'
+    }
+    response = make_response(json.dumps(data))
+    response.mimetype = 'application/json'
+    return response
+    # return jsonify(name='MiracleWong', gender='man')
+    # return jsonify({'name': 'MiracleWong', 'gender': 'man'})
+    # return jsonify(message='Error!'), 500
 
 
 @app.route('/set/<name>')
